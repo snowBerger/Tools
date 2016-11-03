@@ -1,0 +1,16 @@
+
+/*******Webpack常用命令******/
+
+wepack    #最基本的启动webpack命令
+
+webpack -w  #提供 watch方法，实时进行打包更新
+
+webpack -p  #对打包后的文件进行压缩
+
+webpack -d  #提供SourceMaps， 方便调试
+
+webpack --colors  #输出结果带彩色
+
+webpack --profile  #输出性能数据，可以看到每一步的耗时
+
+webpack --display-modules  #默认情况下，node_moudles下的模块会被隐藏，加上这个参数就会显示隐藏的模块

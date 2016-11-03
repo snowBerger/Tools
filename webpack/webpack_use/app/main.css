@@ -1,0 +1,13 @@
+body {
+    background: #86D2DC;
+}
+
+h1 {
+    color: #575757;
+    background: url(./imgs/big.jpg) top left no-repeat;
+}
+
+h3 {
+    color: #fff;
+    background: url(./imgs/small.png) top left no-repeat;
+}

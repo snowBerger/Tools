@@ -1,0 +1,14 @@
+@import "./variable.scss";
+body {
+    background: $bg-cl;
+}
+
+h1 {
+    color: $h1-cl;
+    background: url(./imgs/big.jpg) top left no-repeat;
+}
+
+h3 {
+    color: $h3-cl;
+    background: url(./imgs/small.png) top left no-repeat;
+}

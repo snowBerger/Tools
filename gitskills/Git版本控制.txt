@@ -1,0 +1,129 @@
+
+    http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000
+ 
+	(ls  查看当前目录下的文件列表  ls -ah 查看包括隐藏文件的目录  pwd 查看当前所在的目录  
+	 cat test.txt 查看test.txt里面的内容  vi test.txt 进入并编辑test.txt  ZZ保存并退出test.txt)
+ 
+1.  向Git提交name与email
+    $ git config --global user.name "snowBerger"
+    $ git config --global user.email "zhwslight@gmail.com"
+	
+2.  创建Git仓库(非中文路径)
+    $ mkdir repository
+	$ cd repository
+	$ pwd    //查看当前目录
+	/Users/repository
+	
+	$ git init   //将repository变为Git可管理仓库
+	Initialized empty Git repository in /Users/michael/learngit/.git/
+	
+3.  修改和提交(在repository文件夹中创建readme.txt文件)
+    $ git add readme.txt  //将readme.txt添加到Git仓库 (可以多次add，或一次add多个文件)
+	
+	$ git commit -m "wrote a readme file"  //把文件提交到仓库
+	
+4.  查看仓库状态，检查修改和提交
+    $ git status
+	
+	$ git diff readme.txt  //查看readme.txt文件的修改内容,确认后通过 add、 commit命令提交修改
+	
+5.  版本回退
+    $ git reset --hard commit_id  (commit_id: HEAD当前版本、HEAD^ 前一版本HEAD^^前两个版本、HEAD~100前100个版本、012345..指定的某个版本)
+	
+	$ git log    //查看提交历史记录， 回退到之前的版本  (git log --pretty=oneline)
+	$ git reflog  //查看命令历史，返回到未来的版本
+	
+6.  管理修改
+    $ git diff HEAD -- readme.txt   //查看工作区和版本库中最新版本的区别
+	
+7.  撤销修改
+    $ git checkout -- readme.txt   //撤销工作区的修改
+	$ git reset HEAD readme.txt    //撤销暂存区的修改，然后再 $ git checkout -- readme.txt 撤销工作区的修改
+	注意：当将修改commit到了版本库，需要回退到前一版本库($ git reset --hard HEAD^)
+	
+8.  删除文件
+    删除了工作目录中的文件后：
+	$ git rm test.txt   //从版本库中也删除该文件
+	$ git checkout -- test.txt  //从版本库恢复删除的文件到工作区
+	
+9.  添加远程库
+    $ git remote add origin git@github.com:snowBerger/learngit.git   //关联远程库
+	$ git push -u origin master    //第一次推送master分支的所有内容
+	$ git push origin master  //以后推送master分支的内容
+	
+10. 从远程库克隆
+    $ git clone git@github.com:snowBerger/gitskills.git   //将远程库克隆到本地master  (Git支持多种协议，包括https，但通过ssh支持的原生git协议速度最快)
+	
+11. 查看、创建、合并、删除分支
+    $ git branch  //查看当前所有的分支
+	$ git branch dev  //创建分支
+	$ git checkout dev  //切换到某一分支  
+	$ git checkout -b dev   //创建dev分支并切换到dev分支
+	$ git merge dev   //合并dev分支到当前分支
+	$ git branch -d dev  //删除dev分支
+	
+12. 解决冲突
+    $ git merge feature1  //合并出现冲突，到文件手动解决冲突
+	$ git add readme.txt
+	$ git commit -m "conflict fixed"  //提交
+	$ git log --graph //查看分支合并图  ($ git log --graph --pretty=oneline --abbrev-commit)
+	
+13. 分支管理策略
+    $ git checkout -b dev  //创建并切换到dev分支，修改readme.txt文件
+	$ git add readme.txt
+	$ git commit -m "delete simple" //提交修改
+	$ git checkout master  //切换到master分支
+	$ git merge --no-ff -m "merge with no-ff" dev //使用no-ff模式合并分支，合并后可以看到分支历史
+	$ git log --graph --pretty=oneline --abbrev-commit  //查看分支合并历史
+	$ git branch -d dev
+	
+	分支合并策略：
+	首先，master分支应该是非常稳定的，也就是仅用来发布新版本，平时不能在上面干活；
+	那在哪干活呢？干活都在dev分支上，也就是说，dev分支是不稳定的，到某个时候，比如1.0版本发布时，再把dev分支合并到master上，在master分支发布1.0版本；
+	你和你的小伙伴们每个人都在dev分支上干活，每个人都有自己的分支，时不时地往dev分支上合并就可以了。
+	
+14. Bug分支
+    $ git stash  //保存现场，然后另外创建分支做其他修改
+	$ git stash list  //查看保存的现场list
+	$ git stash pop  //修改完成并commit，还原之前保存的现场，并删除stash列表，继续进行原来的工作。
+	   $ git stash apply  ($ git stash apply stash@{0/1/2/3..})
+	   $ git stash drop  //恢复现场，并删除stash列表
+	
+15. Feature分支
+    $ git branch -D feature   //强行删除一个没有被合并过的分支
+	
+16. 多人协作
+    $ git remote -v  //查看远程库信息。本地新建的分支如果不推送到远程，对其他人就是不可见的；
+	$ git checkout -b branch-name origin/branch-name //在本地创建和远程分支对应的分支，本地和远程分支的名称最好一致；
+	$ git branch --set-upstream branch-name  origin/bransh-name  //建立本地分支和远程分支的关联
+	$ git pull   //如果推送失败，先用git pull抓取远程的新提交；
+	$ git push origin branch-name  //从本地推送分支
+	
+	多人协作工作模式：
+	a. 首先，可以试图用git push origin branch-name推送自己的修改；
+	b. 如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并；
+	c. 如果合并有冲突，则解决冲突，并在本地提交；
+	d. 没有冲突或者解决掉冲突后，再用git push origin branch-name推送就能成功！
+	e. 如果git pull提示“no tracking information”，则说明本地分支和远程分支的链接关系没有创建，用命令git branch --set-upstream branch-name origin/branch-name。
+	
+17. 创建标签
+    $ git tag   //查看所有标签
+	$ git tag <name>  //新建一个标签，默认为HEAD，也可以将标签打到指定的一个commit id ($ git log --pretty=oneline --abbrev-commit  查看提交的历史记录)
+	$ git tag -a tag1 -m "tag for V0.1"  //打标签时附带说明
+	$ git tag -s tag2 -m "tag with PGP"  //用PGP签名标签
+	
+18. 操作标签
+    $ git push origin tag1  //推送本地的tag1标签
+	$ git push origin --tags  //推送全部未推送的本地标签
+	$ git tag -d tag3    //删除本地的tag3标签(未推送到远程)
+	//删除已推送到远程的标签tag4
+	$ git tag -d tag4  //先删除本地的tag4标签
+	$ git push origin :refs/tags/tag4   //删除远程的标签tag4
+	
+19. 自定义Git
+    忽略某些文件时，需要编写.gitignore；.gitignore文件本身要放到版本库里，并且可以对.gitignore做版本管理！
+	$ git config --global alias.status st  //为status命令设定别名，设定后 $ git status 等价于 $ git st
+	$ cd ~
+	$ cat .gitconfig  //在用户主目录下的.gitconfig中可以看到所有设置的别名及其他配置信息
+	
+20. 搭建Git服务器...
